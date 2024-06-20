@@ -78,8 +78,9 @@
       <div class="container">
 
         <div class="row my-3">
-          <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلات الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</p>
           <p class="fw-bold text-danger">اخر تحديث: <span>20-6-2024</span></p>
+          <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلات الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين
+            - غزة</p>
           <p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية </p>
         </div>
         <div class="row my-3">
@@ -128,11 +129,11 @@
           workbook = XLSX.read(data, {
             type: 'array'
           });
-          console.log('Excel file loaded successfully');
+          console.log('data loaded successfully');
           document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
         })
         .catch(error => {
-          console.error('Error fetching the Excel file:', error);
+          console.error('Error fetching data:', error);
           document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل في حالة حدوث خطأ
         });
     }
@@ -197,8 +198,8 @@
             <div class="student-info">
                 <h2>${Name}</h2>
                 <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
-                <p>إجمالي السلات الغذائية المستحقة : ${countAllParcels}</p>
-                ${notesHtml}
+                <p>إجمالي عدد السلات الغذائية المستحقة : ${countAllParcels}</p>
+                <h3 class="text-danger">${notesHtml}</h3>
                 <p>المزيد من معلومات</p>
                 <div class="table-responsive">
                     <table class="table table-bordered">
