@@ -74,12 +74,14 @@
       <h5 class="card-title">استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</h5>
     </div>
     <div class="card-body">
-      <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</p>
+      <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين -
+        غزة</p>
       <p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية </p>
       <div class="container">
         <div class="row my-3">
           <div class="col">
-            <input class="form-control" id="searchInput" type="number" placeholder="اكتب رقم الهوية" pattern="[0-9]{9}" maxlength="9">
+            <input class="form-control" id="searchInput" type="number" style="text-align: right;" placeholder="اكتب رقم الهوية" pattern="[0-9]{9}"
+              maxlength="9">
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" onclick="searchData()">بحث</button>
@@ -87,7 +89,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <div id="resultCount" class="mb-3"></div>
+            <div id="resultCount" class="mb-3 hidden"></div>
             <div id="results"></div>
             <div id="loadingIndicator" class="loading">
               <img src="loading.gif" alt="جاري التحميل..."> <!-- الصورة أو النص الذي يعبر عن التحميل -->
@@ -109,85 +111,85 @@
   <script src="xlsx.full.min.js"></script>
   <!--<script src="myscript.js"></script>-->
   <script>
-     let workbook;
+    let workbook;
 
-function loadExcel() {
-  document.getElementById('loadingIndicator').style.display = 'block'; // إظهار علامة التحميل
+    function loadExcel() {
+      document.getElementById('loadingIndicator').style.display = 'block'; // إظهار علامة التحميل
 
-  fetch('data.xlsx', {
-      method: 'GET'
-    })
-    .then(response => response.arrayBuffer())
-    .then(data => {
-      workbook = XLSX.read(data, {
-        type: 'array'
-      });
-      console.log('Excel file loaded successfully');
-      document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
-    })
-    .catch(error => {
-      console.error('Error fetching the Excel file:', error);
-      document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل في حالة حدوث خطأ
-    });
-}
+      fetch('data.xlsx', {
+        method: 'GET'
+      })
+        .then(response => response.arrayBuffer())
+        .then(data => {
+          workbook = XLSX.read(data, {
+            type: 'array'
+          });
+          console.log('Excel file loaded successfully');
+          document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
+        })
+        .catch(error => {
+          console.error('Error fetching the Excel file:', error);
+          document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل في حالة حدوث خطأ
+        });
+    }
 
-function searchData() {
-  const searchInput = document.getElementById('searchInput').value;
-  const resultsDiv = document.getElementById('results');
-  const resultCountSpan = document.getElementById('resultCount');
+    function searchData() {
+      const searchInput = document.getElementById('searchInput').value;
+      const resultsDiv = document.getElementById('results');
+      const resultCountSpan = document.getElementById('resultCount');
 
-  if (!resultsDiv || !resultCountSpan) {
-    console.error('Result div or count span not found');
-    return;
-  }
-
-  resultsDiv.innerHTML = ''; // Clear previous results
-
-  if (!workbook) {
-    resultsDiv.innerHTML = 'الرجاء الانتظار قليلاً';
-    return;
-  }
-
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-  const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-  const results = jsonData.filter(row => row.ID == searchInput);
-
-  displayResults(results);
-}
-
-function displayResults(results) {
-  const resultsDiv = document.getElementById('results');
-  const resultCountSpan = document.getElementById('resultCount');
-
-  if (!resultsDiv || !resultCountSpan) {
-    console.error('Result div or count span not found');
-    return;
-  }
-
-  if (results.length > 0) {
-    resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
-    results.forEach(result => {
-      const ID = result['ID'] || 'غير معروف';
-      const Name = result['Name'] || 'غير معروف';
-      const CF = result['CF'] || 'غير معروف';
-      const WFP2 = result['WFP#2'] || 'غير معروف';
-      const WFP1 = result['WFP#1'] || 'غير معروف';
-      const M1 = result['M#1'] || 'غير معروف';
-      const M2 = result['M#2'] || 'غير معروف';
-      const Notes = result['Notes'] || '';
-      const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
-      const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
-      const countAllParcels = result['countAllParcels'] || 'غير معروف';
-      const MorWFP = result['MorWFP'] || 'غير معروف';
-
-      let notesHtml = '';
-      if (Notes) {
-        notesHtml = `<p>ملاحظات: ${Notes}</p>`;
+      if (!resultsDiv || !resultCountSpan) {
+        console.error('Result div or count span not found');
+        return;
       }
 
-      const studentInfo = `
+      resultsDiv.innerHTML = ''; // Clear previous results
+
+      if (!workbook) {
+        resultsDiv.innerHTML = 'الرجاء الانتظار قليلاً';
+        return;
+      }
+
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      const results = jsonData.filter(row => row.ID == searchInput);
+
+      displayResults(results);
+    }
+
+    function displayResults(results) {
+      const resultsDiv = document.getElementById('results');
+      const resultCountSpan = document.getElementById('resultCount');
+
+      if (!resultsDiv || !resultCountSpan) {
+        console.error('Result div or count span not found');
+        return;
+      }
+
+      if (results.length > 0) {
+        resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
+        results.forEach(result => {
+          const ID = result['ID'] || 'غير معروف';
+          const Name = result['Name'] || 'غير معروف';
+          const CF = result['CF'] || 'غير معروف';
+          const WFP2 = result['WFP#2'] || 'غير معروف';
+          const WFP1 = result['WFP#1'] || 'غير معروف';
+          const M1 = result['M#1'] || 'غير معروف';
+          const M2 = result['M#2'] || 'غير معروف';
+          const Notes = result['Notes'] || '';
+          const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
+          const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
+          const countAllParcels = result['countAllParcels'] || 'غير معروف';
+          const MorWFP = result['MorWFP'] || 'غير معروف';
+
+          let notesHtml = '';
+          if (Notes) {
+            notesHtml = `<p>ملاحظات: ${Notes}</p>`;
+          }
+
+          const studentInfo = `
             <div class="student-info">
                 <h2>${Name}</h2>
                 <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
@@ -216,16 +218,16 @@ function displayResults(results) {
                 </div>
             </div>
         `;
-      resultsDiv.innerHTML += studentInfo;
-    });
-  } else {
-    resultCountSpan.textContent = '0 نتائج';
-    resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
-  }
-}
+          resultsDiv.innerHTML += studentInfo;
+        });
+      } else {
+        resultCountSpan.textContent = '0 نتائج';
+        resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
+      }
+    }
 
-// Load the Excel file when the page loads
-window.onload = loadExcel;
+    // Load the Excel file when the page loads
+    window.onload = loadExcel;
 
 
   </script>
