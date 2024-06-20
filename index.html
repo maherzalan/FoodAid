@@ -51,26 +51,18 @@
 
   <div class="card">
     <div class="card-header">
-      <h5 class="card-title">البحث عن بيانات طالب في مدرسة ذكور دير البلح الاعدادية أ</h5>
+      <h5 class="card-title">استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</h5>
     </div>
     <div class="card-body">
-      <p class="card-text">هذا التطبيق لتسهيل عملية الاستعلام عن بيانات الطلاب في مدرسة ذكور دير البلح الإعدادية
+      <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين -
+        غزة
         أ.</p>
-<p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية او الاسم او اختيار الصف والشعبة</p>
+      <p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية </p>
       <div class="row mt-3">
         <div class="col-md-4">
-          <input class="form-control search-input" id="searchInput" placeholder="اكتب رقم هوية الطالب او اسمه">
+          <input class="form-control search-input" id="searchInput" placeholder="اكتب رقم الهوية">
         </div>
-        <div class="col-md-3">
-          <select class="form-select" id="gradeSelect">
-            <option value="">الصف</option>
-          </select>
-        </div>
-        <div class="col-md-3">
-          <select class="form-select" id="sectionSelect">
-            <option value="">الشعبة</option>
-          </select>
-        </div>
+
         <div class="col-md-2">
           <button id="searchButton" class="btn btn-primary">
             <span id="searchButtonText">بحث</span>
@@ -87,7 +79,7 @@
           <span id="resultCount" class="badge bg-secondary">0 نتائج</span>
         </div>
         <div id="results"></div>
-       
+
       </div>
 
       <div class="mb-0 text-center">
@@ -102,87 +94,51 @@
   <script src="myscript.js"></script>
   <script>
 
-    
-    document.getElementById('searchButton').addEventListener('click', async () => {
-      const searchInput = document.getElementById('searchInput').value;
-      const selectedGrade = document.getElementById('gradeSelect').value;
-      const selectedSection = document.getElementById('sectionSelect').value;
+    let workbook;
 
-      toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-      await fetchExcelAndSearch(searchInput, selectedGrade, selectedSection);
-      toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-    });
-
-    document.getElementById('searchInput').addEventListener('keypress', async (event) => {
-      if (event.key === 'Enter') {
-        const searchInput = document.getElementById('searchInput').value;
-        const selectedGrade = document.getElementById('gradeSelect').value;
-        const selectedSection = document.getElementById('sectionSelect').value;
-
-        toggleSearchButtonLoading(true); // تشغيل الـ Spinner في زر البحث
-        await fetchExcelAndSearch(searchInput, selectedGrade, selectedSection);
-        toggleSearchButtonLoading(false); // إيقاف الـ Spinner في زر البحث
-      }
-    });
-    let allResults = []; // تعريف المتغير هنا
-    let selectedGrade = ''; // تعريف المتغير في النطاق العلوي
-
-    displayClassesAndSections();
-
-    // الدالة الجديدة تأخذ بعين الاعتبار الصف والشعبة المحددين
-    async function fetchExcelAndSearch(searchValue, selectedGrade, selectedSection) {
-      try {
-        const response = await fetch('data.xls', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-          }
+    function loadExcel() {
+      fetch('data.xls', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      })
+        .then(response => response.arrayBuffer())
+        .then(data => {
+          workbook = XLSX.read(data, { type: 'array' });
+          console.log('Excel file loaded successfully');
+        })
+        .catch(error => {
+          console.error('Error fetching the Excel file:', error);
         });
-        const arrayBuffer = await response.arrayBuffer();
-        const data = new Uint8Array(arrayBuffer);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets['RP030Excle']);
-        allResults = jsonData;
-
-        // تصفية النتائج حسب الصف والشعبة المحددين
-        let results = jsonData;
-        if (selectedGrade && selectedSection) {
-          results = results.filter(student => student['الصف'] === selectedGrade && student['الشعبة'] == selectedSection);
-        } else if (selectedGrade) {
-          results = results.filter(student => student['الصف'] === selectedGrade);
-        }
-
-        if (searchValue) {
-          results = results.filter(student => student['رقم بطاقة التعريف'] === searchValue || student['اسم الطالب عربي'].includes(searchValue));
-        }
-
-        toggleSearchButtonLoading(false);
-        displayResults(results);
-
-        // بعد تحميل البيانات، يتم استدعاء دالة displayClassesAndSections
-        if (selectedGrade === 'aaaaaaaaaa' && selectedGrade === 'aaaaaaaaaa' && selectedGrade === 'aaaaaaaaaa') displayClassesAndSections();
-      } catch (error) {
-        toggleSearchButtonLoading(false); // إيقاف عنصر الـ Loading في حالة الخطأ أيضًا
-        console.error('Error fetching or processing data:', error);
-      }
     }
 
+    function searchData() {
+      const searchInput = document.getElementById('searchInput').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = ''; // Clear previous results
 
-    function toggleSearchButtonLoading(loading) {
-      const searchButton = document.getElementById('searchButton');
-      const searchButtonText = document.getElementById('searchButtonText');
-      const searchButtonSpinner = document.getElementById('searchButtonSpinner');
+      if (!workbook) {
+        resultDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
+        return;
+      }
 
-      if (loading) {
-        searchButtonText.style.display = 'none';
-        searchButtonSpinner.style.display = 'inline-block';
-        searchButton.disabled = true; // تعطيل الزر أثناء الـ Spinner
+      const sheetName = workbook.SheetNames[0];
+      const worksheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+      const result = jsonData.find(row => row.ID == searchInput);
+
+      if (result) {
+        resultDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
       } else {
-        searchButtonText.style.display = 'inline-block';
-        searchButtonSpinner.style.display = 'none';
-        searchButton.disabled = false; // تفعيل الزر بعد الإنتهاء من البحث
+        resultDiv.innerHTML = 'لا توجد نتائج مطابقة.';
       }
     }
+
+    // Load the Excel file when the page loads
+    window.onload = loadExcel;
+
 
     function displayResults(results) {
       const resultsDiv = document.getElementById('results');
@@ -218,106 +174,7 @@
       }
     }
 
-    // عرض الصفوف والشعب
-    const classesAndSectionsDiv = document.getElementById('classesAndSections');
 
-    function displayClassesAndSections() {
-      const classesSet = new Set();
-      const sectionsMap = new Map();
-
-      allResults.forEach(result => {
-        classesSet.add(result['الصف']);
-        if (!sectionsMap.has(result['الصف'])) {
-          sectionsMap.set(result['الصف'], new Set());
-        }
-        sectionsMap.get(result['الصف']).add(result['الشعبة']);
-      });
-
-      const gradeSelect = document.getElementById('gradeSelect');
-      const sectionSelect = document.getElementById('sectionSelect');
-
-      gradeSelect.innerHTML = '<option value="">الصف</option>';
-      sectionSelect.innerHTML = '<option value="">الشعبة</option>';
-
-      classesSet.forEach(className => {
-        const option = document.createElement('option');
-        option.value = className;
-        option.textContent = className;
-        gradeSelect.appendChild(option);
-      });
-
-      gradeSelect.addEventListener('change', () => {
-        selectedGrade = gradeSelect.value; // تحديث المتغير هنا
-        updateSectionsSelect(selectedGrade, sectionsMap);
-      });
-    }
-
-    const gradeSelect = document.getElementById('gradeSelect');
-    const sectionSelect = document.getElementById('sectionSelect');
-
-    gradeSelect.innerHTML = '<option value="">الصف</option>';
-    sectionSelect.innerHTML = '<option value="">الشعبة</option>';
-
-    classesSet.forEach(className => {
-      const option = document.createElement('option');
-      option.value = className;
-      option.textContent = className;
-      gradeSelect.appendChild(option);
-    });
-
-    gradeSelect.addEventListener('change', () => {
-      selectedGrade = gradeSelect.value; // تحديث المتغير هنا
-      updateSectionsSelect(selectedGrade, sectionsMap);
-    });
-
-    function updateSectionsSelect(selectedGrade, sectionsMap) {
-      const sectionSelect = document.getElementById('sectionSelect');
-      sectionSelect.innerHTML = '<option value="">الشعبة</option>';
-
-      if (selectedGrade && sectionsMap.has(selectedGrade)) {
-        const sections = sectionsMap.get(selectedGrade);
-        sections.forEach(sectionName => {
-          const option = document.createElement('option');
-          option.value = sectionName;
-          option.textContent = sectionName;
-          sectionSelect.appendChild(option);
-        });
-      }
-    }
-    function startpage() {
-      fetchExcelAndSearch('aaaaaaaaaa', 'aaaaaaaaaa', 'aaaaaaaaaa');
-      toggleSearchButtonLoading(true);
-      // استدعاء الدالة لعرض الصفوف والشعب عند بدء التحميل
-      displayClassesAndSections();
-    }
-
-fetch('data.xlsx')
-  .then(response => response.arrayBuffer())
-  .then(arrayBuffer => {
-    const data = new Uint8Array(arrayBuffer);
-    const workbook = XLSX.read(data, { type: 'array' });
-    const sheetName = workbook.SheetNames[0]; // اسم الورقة التي تريد التعديل عليها
-    const worksheet = workbook.Sheets[sheetName];
-    
-    // الآن يمكنك القراءة والتعديل على البيانات في الملف
-    // على سبيل المثال، للوصول إلى قيمة معينة:
-    const cellValue = worksheet['A1'].v; // استخدم اسم الخلية المطلوبة هنا
-    // قم بإجراء التعديلات اللازمة على البيانات
-  })
-  .catch(error => {
-    console.error('Error loading Excel file:', error);
-  });
-
-// على سبيل المثال، لحفظ تعديل في خلية A1:
-worksheet['A1'].v = 'القيمة الجديدة';
-
-// بعد القيام بجميع التعديلات اللازمة، يمكن حفظ الملف مرة أخرى:
-const newWorkbook = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(newWorkbook, worksheet, sheetName);
-const newFileData = XLSX.write(newWorkbook, { type: 'array', bookType: 'xlsx' });
-
-// إرسال ملف البيانات للخادم إذا كنت بحاجة إلى حفظ التغييرات على الخادم
-// يمكنك استخدام fetch أو طرق أخرى لإرسال الملف إلى الخادم
   </script>
 
 
