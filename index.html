@@ -111,91 +111,85 @@
   <script src="xlsx.full.min.js"></script>
   <!--<script src="myscript.js"></script>-->
   <script>
-    let workbook;
+     let workbook;
 
-    function loadExcel() {
-      // عرض علامة التحميل
-      document.getElementById('loadingIndicator').style.display = 'block';
+function loadExcel() {
+  document.getElementById('loadingIndicator').style.display = 'block'; // إظهار علامة التحميل
 
-      fetch('data.xlsx', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-      })
-        .then(response => response.arrayBuffer())
-        .then(data => {
-          workbook = XLSX.read(data, { type: 'array' });
-          console.log('Excel file loaded successfully');
+  fetch('data.xlsx', {
+      method: 'GET'
+    })
+    .then(response => response.arrayBuffer())
+    .then(data => {
+      workbook = XLSX.read(data, {
+        type: 'array'
+      });
+      console.log('Excel file loaded successfully');
+      document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
+    })
+    .catch(error => {
+      console.error('Error fetching the Excel file:', error);
+      document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل في حالة حدوث خطأ
+    });
+}
 
-          // إخفاء علامة التحميل بمجرد الانتهاء من التحميل
-          document.getElementById('loadingIndicator').style.display = 'none';
-        })
-        .catch(error => {
-          console.error('Error fetching the Excel file:', error);
+function searchData() {
+  const searchInput = document.getElementById('searchInput').value;
+  const resultsDiv = document.getElementById('results');
+  const resultCountSpan = document.getElementById('resultCount');
 
-          // في حالة حدوث خطأ، يجب أيضًا إخفاء علامة التحميل
-          document.getElementById('loadingIndicator').style.display = 'none';
-        });
-    }
+  if (!resultsDiv || !resultCountSpan) {
+    console.error('Result div or count span not found');
+    return;
+  }
 
-    function searchData() {
-      const searchInput = document.getElementById('searchInput').value;
-      const resultsDiv = document.getElementById('results');
-      const resultCountSpan = document.getElementById('resultCount');
+  resultsDiv.innerHTML = ''; // Clear previous results
 
-      if (!resultsDiv || !resultCountSpan) {
-        console.error('Result div or count span not found');
-        return;
+  if (!workbook) {
+    resultsDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
+    return;
+  }
+
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+  const results = jsonData.filter(row => row.ID == searchInput);
+
+  displayResults(results);
+}
+
+function displayResults(results) {
+  const resultsDiv = document.getElementById('results');
+  const resultCountSpan = document.getElementById('resultCount');
+
+  if (!resultsDiv || !resultCountSpan) {
+    console.error('Result div or count span not found');
+    return;
+  }
+
+  if (results.length > 0) {
+    resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
+    results.forEach(result => {
+      const ID = result['ID'] || 'غير معروف';
+      const Name = result['Name'] || 'غير معروف';
+      const CF = result['CF'] || 'غير معروف';
+      const WFP2 = result['WFP#2'] || 'غير معروف';
+      const WFP1 = result['WFP#1'] || 'غير معروف';
+      const M1 = result['M#1'] || 'غير معروف';
+      const M2 = result['M#2'] || 'غير معروف';
+      const Notes = result['Notes'] || '';
+      const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
+      const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
+      const countAllParcels = result['countAllParcels'] || 'غير معروف';
+      const MorWFP = result['MorWFP'] || 'غير معروف';
+
+      let notesHtml = '';
+      if (Notes) {
+        notesHtml = `<p>ملاحظات: ${Notes}</p>`;
       }
 
-      resultsDiv.innerHTML = ''; // Clear previous results
-
-      if (!workbook) {
-        resultsDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
-        return;
-      }
-
-      const sheetName = workbook.SheetNames[0];
-      const worksheet = workbook.Sheets[sheetName];
-      const jsonData = XLSX.utils.sheet_to_json(worksheet);
-
-      const results = jsonData.filter(row => row.ID == searchInput);
-
-      displayResults(results);
-    }
-
-    function displayResults(results) {
-      const resultsDiv = document.getElementById('results');
-      const resultCountSpan = document.getElementById('resultCount');
-
-      if (!resultsDiv || !resultCountSpan) {
-        console.error('Result div or count span not found');
-        return;
-      }
-
-      if (results.length > 0) {
-        resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
-        results.forEach(result => {
-          const ID = result['ID'] || 'غير معروف';
-          const Name = result['Name'] || 'غير معروف';
-          const CF = result['CF'] || 'غير معروف';
-          const WFP2 = result['WFP#2'] || 'غير معروف';
-          const WFP1 = result['WFP#1'] || 'غير معروف';
-          const M1 = result['M#1'] || 'غير معروف';
-          const M2 = result['M#2'] || 'غير معروف';
-          const Notes = result['Notes'] || '';
-          const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
-          const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
-          const countAllParcels = result['countAllParcels'] || 'غير معروف';
-          const MorWFP = result['MorWFP'] || 'غير معروف';
-
-          let notesHtml = '';
-          if (Notes) {
-            notesHtml = `<p>ملاحظات: ${Notes}</p>`;
-          }
-
-          const studentInfo = `
+      const studentInfo = `
             <div class="student-info">
                 <h2>${Name}</h2>
                 <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
@@ -226,23 +220,17 @@
                 </div>
             </div>
         `;
-          resultsDiv.innerHTML += studentInfo;
-        });
-      } else {
-        resultCountSpan.textContent = '0 نتائج';
-        resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
-      }
-    }
-
-    // Load the Excel file when the page loads
-    window.onload = loadExcel;
-
-    // إضافة Event Listener للبحث عند الضغط على Enter
-    document.getElementById('searchInput').addEventListener('keyup', function (e) {
-      if (e.key === 'Enter') {
-        searchData();
-      }
+      resultsDiv.innerHTML += studentInfo;
     });
+  } else {
+    resultCountSpan.textContent = '0 نتائج';
+    resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
+  }
+}
+
+// Load the Excel file when the page loads
+window.onload = loadExcel;
+
 
   </script>
 </body>
