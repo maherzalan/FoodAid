@@ -9,7 +9,7 @@
   <meta name="keywords" content="Unrwa,Marks,emis">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.rtl.min.css"
     integrity="sha384-gXt9imSW0VcJVHezoNQsP+TNrjYXoGcrqBZJpry9zJt8PCQjobwmhMGaDHTASo9N" crossorigin="anonymous">
-  <title>البحث عن طالب في مدرسة ذكور دير البلح الاعدادية أ</title>
+  <title>استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</title>
   <style>
     body {
       background: #212424;
@@ -61,13 +61,11 @@
       <div class="row mt-3">
         <div class="col-md-4">
           <input class="form-control search-input" id="searchInput" placeholder="اكتب رقم الهوية">
-          <button onclick="searchData()">بحث</button>
-          <div id="result"></div>
         </div>
 
         <div class="col-md-2">
           <button id="searchButton" class="btn btn-primary">
-            <span id="searchButtonText">بحث</span>
+            <span id="searchButtonText"  onclick="searchData()">بحث</span>
             <div id="searchButtonSpinner" class="spinner-border spinner-border-sm ms-2" role="status"
               style="display: none;">
               <span class="visually-hidden">جاري البحث...</span>
@@ -93,7 +91,7 @@
   </div>
 
   <script src="xlsx.full.min.js"></script>
-  <script src="myscript.js"></script>
+  <!--<script src="myscript.js"></script>-->
   <script>
 
     let workbook;
