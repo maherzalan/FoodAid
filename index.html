@@ -172,36 +172,36 @@
           }
 
           const studentInfo = `
-                <div class="student-info">
-                    <h2>${Name}</h2>
-                    <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
-                    <!--<p>آخر طباعة: ${LastPrintedDT}</p>-->
-                    <p>عدد الطرود المستلمة: ${countgetsParcels}</p>
-                    <p>إجمالي الطرود المستحقة: ${countAllParcels}</p>
-                    ${notesHtml}
-                    <p>المزيد من معلومات</p>
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>WFP#2</th>
-                                    <th>WFP#1</th>
-                                    <th>M#1</th>
-                                    <th>M#2</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>${WFP2}</td>
-                                    <td>${WFP1}</td>
-                                    <td>${M1}</td>
-                                    <td>${M2}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="student-info">
+                <h2>${Name}</h2>
+                <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
+                <!--<p>آخر طباعة: ${LastPrintedDT}</p>-->
+                <p>عدد الطرود المستلمة: ${countgetsParcels}</p>
+                <p>إجمالي الطرود المستحقة: ${countAllParcels}</p>
+                ${notesHtml}
+                <p>المزيد من معلومات</p>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>WFP#2</th>
+                                <th>WFP#1</th>
+                                <th>M#1</th>
+                                <th>M#2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${WFP2}</td>
+                                <td>${WFP1}</td>
+                                <td>${M1}</td>
+                                <td>${M2}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            `;
+            </div>
+        `;
           resultsDiv.innerHTML += studentInfo;
         });
       } else {
@@ -211,7 +211,14 @@
     }
 
     // Load the Excel file when the page loads
-    window.onload = loadExcel;
+    window.onload = function () {
+      loadExcel();
+      document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+          searchData();
+        }
+      });
+    };
 
 
   </script>
