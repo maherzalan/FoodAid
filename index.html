@@ -93,26 +93,6 @@
   <script src="xlsx.full.min.js"></script>
   <!--<script src="myscript.js"></script>-->
   <script>
-
-    let workbook;
-
-    function loadExcel() {
-      fetch('data.xls', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-      })
-        .then(response => response.arrayBuffer())
-        .then(data => {
-          workbook = XLSX.read(data, { type: 'array' });
-          console.log('Excel file loaded successfully');
-        })
-        .catch(error => {
-          console.error('Error fetching the Excel file:', error);
-        });
-    }
-
     let workbook;
 
     function loadExcel() {
