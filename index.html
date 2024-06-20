@@ -131,21 +131,46 @@
       if (results.length > 0) {
         resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
         results.forEach(result => {
-          const familyMobile = result['جوال العائلة'] || 'غير متوفر';
-          const familyTel = result['تليفون العائلة'] || 'غير متوفر';
-          const fatherWorks = result['مهنة ولي الأمر'] || 'لا يعمل';
-          const m = result['"هل لديه مرض مزمن"'] || 'لا';
+          const ID = result['ID'] || 'غير معروف';
+          const Name = result['Name'] || 'غير معروف';
+          const CF = result['CF'] || 'غير معروف';
+          const WFP2 = result['WFP#2'] || 'غير معروف';
+          const WFP1 = result['WFP#1'] || 'غير معروف';
+          const M1 = result['M#1'] || 'غير معروف';
+          const M2 = result['M#2'] || 'غير معروف';
+          const Notes = result['Notes'] || 'غير معروف';
+          const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
+          const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
+          const countAllParcels = result['countAllParcels'] || 'غير معروف';
+          const MorWFP = result['MorWFP'] || 'غير معروف';
+
           const studentInfo = `
                 <div class="fw-bold text-success" style="text-align: center; background: #fff; border-radius: 26px; padding: 7px; margin: 28px 0;">
-                    <h2>${result['اسم الطالب عربي']}</h2>
-                    <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
-                    <p>العنوان: ${result['العنوان']}</p>
-                    <h3 style="color: red;">معدل العام السابق: ${result['معدل الطالب العام السابق']}</h3>
-                    <p>جوال: <a href="tel:${familyMobile}">${familyMobile}</a></p>
-                    <p>تلفون: <a href="tel:${familyTel}">${familyTel}</a></p>
-                    <!--<p>اسم الأم: ${result['اسم الأم']}</p>-->
-                    <p>هل لديه مرض: ${m}</p>
-                    <p>مهنة ولي الأمر: ${fatherWorks}</p>
+                    <h2>${Name}</h2>
+                    <h3 style="color: red;">عدد الأفراد: ${CF}</h3>
+                    <p>آخر طباعة: ${LastPrintedDT}</p>
+                    <p>ملاحظات: ${Notes}</p>
+                    <p>عدد الطرود المستلمة: ${countgetsParcels}</p>
+                    <p>إجمالي الطرود: ${countAllParcels}</p>
+                    <p>المزيد من معلومات WFP: ${MorWFP}</p>
+                    <table border="1" style="width: 100%; margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>WFP#2</th>
+                                <th>WFP#1</th>
+                                <th>M#1</th>
+                                <th>M#2</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>${WFP2}</td>
+                                <td>${WFP1}</td>
+                                <td>${M1}</td>
+                                <td>${M2}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             `;
           resultsDiv.innerHTML += studentInfo;
@@ -155,6 +180,7 @@
         resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
       }
     }
+
 
 
 
