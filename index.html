@@ -74,14 +74,18 @@
       <h5 class="card-title">استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</h5>
     </div>
     <div class="card-body">
-      <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلة الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين -
-        غزة</p>
-      <p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية </p>
+
       <div class="container">
+
+        <div class="row my-3">
+          <p class="card-text">هذا التطبيق لتسهيل عملية استعلام حول السلات الغذائية التابعة لوكالة الغوث وتشغيل اللاجئين - غزة</p>
+          <p class="fw-bold text-danger">اخر تحديث: <span>20-6-2024</span></p>
+          <p class="fw-bold text-danger">وذلك من خلال ادخال رقم الهوية </p>
+        </div>
         <div class="row my-3">
           <div class="col">
-            <input class="form-control" id="searchInput" type="number" style="text-align: right;" placeholder="اكتب رقم الهوية" pattern="[0-9]{9}"
-              maxlength="9">
+            <input class="form-control" id="searchInput" type="number" style="text-align: right;"
+              placeholder="اكتب رقم الهوية" pattern="[0-9]{9}" maxlength="9">
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" onclick="searchData()">بحث</button>
@@ -193,25 +197,25 @@
             <div class="student-info">
                 <h2>${Name}</h2>
                 <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
-                <p>إجمالي السلات الغذائية المستحقة لهذه العائلة: ${countAllParcels}</p>
+                <p>إجمالي السلات الغذائية المستحقة : ${countAllParcels}</p>
                 ${notesHtml}
                 <p>المزيد من معلومات</p>
                 <div class="table-responsive">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>WFP#2</th>
-                                <th>WFP#1</th>
                                 <th>M#1</th>
                                 <th>M#2</th>
+                                <th>WFP#2</th>
+                                <th>WFP#1</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>${WFP2}</td>
-                                <td>${WFP1}</td>
                                 <td>${M1}</td>
                                 <td>${M2}</td>
+                                <td>${WFP2}</td>
+                                <td>${WFP1}</td>
                             </tr>
                         </tbody>
                     </table>
