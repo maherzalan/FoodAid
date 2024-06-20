@@ -52,6 +52,18 @@
       padding: 15px;
       margin: 28px 0;
     }
+
+    /* تنسيق العلامة loading */
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px;
+    }
+
+    .loading img {
+      width: 50px;
+      /* حجم الصورة */
+    }
   </style>
 </head>
 
@@ -69,7 +81,7 @@
       <div class="container">
         <div class="row my-3">
           <div class="col">
-            <input class="form-control" id="searchInput" placeholder="اكتب رقم الهوية">
+            <input class="form-control" id="searchInput" placeholder="اكتب رقم الهوية" pattern="[0-9]{9}" maxlength="9">
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" onclick="searchData()">بحث</button>
@@ -79,6 +91,9 @@
           <div class="col">
             <div id="resultCount" class="mb-3"></div>
             <div id="results"></div>
+            <div id="loadingIndicator" class="loading">
+              <img src="loading.gif" alt="جاري التحميل..."> <!-- الصورة أو النص الذي يعبر عن التحميل -->
+            </div>
           </div>
         </div>
       </div>
@@ -99,6 +114,9 @@
     let workbook;
 
     function loadExcel() {
+      // عرض علامة التحميل
+      document.getElementById('loadingIndicator').style.display = 'block';
+
       fetch('data.xls', {
         method: 'GET',
         headers: {
@@ -109,9 +127,15 @@
         .then(data => {
           workbook = XLSX.read(data, { type: 'array' });
           console.log('Excel file loaded successfully');
+
+          // إخفاء علامة التحميل بمجرد الانتهاء من التحميل
+          document.getElementById('loadingIndicator').style.display = 'none';
         })
         .catch(error => {
           console.error('Error fetching the Excel file:', error);
+
+          // في حالة حدوث خطأ، يجب أيضًا إخفاء علامة التحميل
+          document.getElementById('loadingIndicator').style.display = 'none';
         });
     }
 
@@ -128,7 +152,7 @@
       resultsDiv.innerHTML = ''; // Clear previous results
 
       if (!workbook) {
-        resultsDiv.innerHTML = 'الرجاء الانتظار قليلا';
+        resultsDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
         return;
       }
 
@@ -162,7 +186,7 @@
           const M2 = result['M#2'] || 'غير معروف';
           const Notes = result['Notes'] || '';
           const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
-          const countgetsParcels = result['countgetsParcels'] || 0;
+          const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
           const countAllParcels = result['countAllParcels'] || 'غير معروف';
           const MorWFP = result['MorWFP'] || 'غير معروف';
 
@@ -211,15 +235,14 @@
     }
 
     // Load the Excel file when the page loads
-    window.onload = function () {
-      loadExcel();
-      document.getElementById('searchInput').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-          searchData();
-        }
-      });
-    };
+    window.onload = loadExcel;
 
+    // إضافة Event Listener للبحث عند الضغط على Enter
+    document.getElementById('searchInput').addEventListener('keyup', function (e) {
+      if (e.key === 'Enter') {
+        searchData();
+      }
+    });
 
   </script>
 </body>
