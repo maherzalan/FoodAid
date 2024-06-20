@@ -93,38 +93,20 @@
   <script src="xlsx.full.min.js"></script>
   <!--<script src="myscript.js"></script>-->
   <script>
-    let workbook;
-
-    function loadExcel() {
-      fetch('data.xls', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        }
-      })
-        .then(response => response.arrayBuffer())
-        .then(data => {
-          workbook = XLSX.read(data, { type: 'array' });
-          console.log('Excel file loaded successfully');
-        })
-        .catch(error => {
-          console.error('Error fetching the Excel file:', error);
-        });
-    }
-
     function searchData() {
       const searchInput = document.getElementById('searchInput').value;
-      const resultDiv = document.getElementById('result');
+      const resultsDiv = document.getElementById('results');
+      const resultCountSpan = document.getElementById('resultCount');
 
-      if (!resultDiv) {
-        console.error('Result div not found');
+      if (!resultsDiv || !resultCountSpan) {
+        console.error('Result div or count span not found');
         return;
       }
 
-      resultDiv.innerHTML = ''; // Clear previous results
+      resultsDiv.innerHTML = ''; // Clear previous results
 
       if (!workbook) {
-        resultDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
+        resultsDiv.innerHTML = 'الرجاء تحميل ملف Excel أولاً.';
         return;
       }
 
@@ -132,25 +114,19 @@
       const worksheet = workbook.Sheets[sheetName];
       const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-      const result = jsonData.find(row => row.ID == searchInput);
+      const results = jsonData.filter(row => row.ID == searchInput);
 
-      if (result) {
-        resultDiv.innerHTML = `<pre>${JSON.stringify(result, null, 2)}</pre>`;
-      } else {
-        resultDiv.innerHTML = 'لا توجد نتائج مطابقة.';
-      }
+      displayResults(results);
     }
-
-    // Load the Excel file when the page loads
-    window.onload = loadExcel;
-
-
 
     function displayResults(results) {
       const resultsDiv = document.getElementById('results');
       const resultCountSpan = document.getElementById('resultCount');
 
-      resultsDiv.innerHTML = '';
+      if (!resultsDiv || !resultCountSpan) {
+        console.error('Result div or count span not found');
+        return;
+      }
 
       if (results.length > 0) {
         resultCountSpan.textContent = `${results.length} نتائج`; // تحديث نص العدد
@@ -160,25 +136,26 @@
           const fatherWorks = result['مهنة ولي الأمر'] || 'لا يعمل';
           const m = result['"هل لديه مرض مزمن"'] || 'لا';
           const studentInfo = `
-        <div class="fw-bold text-success" style=" text-align: center;background: #fff;border-radius: 26px;padding: 7px;margin: 28px 0;">
-          <h2>${result['اسم الطالب عربي']}</h2>
-          <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
-          <p>العنوان : ${result['العنوان']}</p>
-          <h3 style="color: red;">معدل العام السابق : ${result['معدل الطالب العام السابق']}</h3>
-          <p>جوال : <a href="tel:${familyMobile}">${familyMobile}</a>  </p>
-          <p>تلفون : <a href="tel:${familyTel}">${familyTel}</a>  </p>
-          <!--<p>اسم الام: ${result['اسم الأم']}</p>-->
-          <p>هل لديه مرض : ${m}</p>
-          <p>مهنة ولي الأمر : ${fatherWorks}</p>
-        </div>
-      `;
+                <div class="fw-bold text-success" style="text-align: center; background: #fff; border-radius: 26px; padding: 7px; margin: 28px 0;">
+                    <h2>${result['اسم الطالب عربي']}</h2>
+                    <h3 style="color: red;">الصف: ${result['الصف']} ${result['الشعبة']}</h3>
+                    <p>العنوان: ${result['العنوان']}</p>
+                    <h3 style="color: red;">معدل العام السابق: ${result['معدل الطالب العام السابق']}</h3>
+                    <p>جوال: <a href="tel:${familyMobile}">${familyMobile}</a></p>
+                    <p>تلفون: <a href="tel:${familyTel}">${familyTel}</a></p>
+                    <!--<p>اسم الأم: ${result['اسم الأم']}</p>-->
+                    <p>هل لديه مرض: ${m}</p>
+                    <p>مهنة ولي الأمر: ${fatherWorks}</p>
+                </div>
+            `;
           resultsDiv.innerHTML += studentInfo;
         });
       } else {
         resultCountSpan.textContent = '0 نتائج';
-        resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات لهذا الطالب.</p>';
+        resultsDiv.innerHTML = '<p>عذراً لا يوجد بيانات.</p>';
       }
     }
+
 
 
   </script>
