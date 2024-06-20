@@ -160,18 +160,23 @@
           const WFP1 = result['WFP#1'] || 'غير معروف';
           const M1 = result['M#1'] || 'غير معروف';
           const M2 = result['M#2'] || 'غير معروف';
-          const Notes = result['Notes'] || 'غير معروف';
+          const Notes = result['Notes'] || '';
           const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
           const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
           const countAllParcels = result['countAllParcels'] || 'غير معروف';
           const MorWFP = result['MorWFP'] || 'غير معروف';
+
+          let notesHtml = '';
+          if (Notes) {
+            notesHtml = `<p>ملاحظات: ${Notes}</p>`;
+          }
 
           const studentInfo = `
                 <div class="student-info">
                     <h2>${Name}</h2>
                     <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
                     <p>آخر طباعة: ${LastPrintedDT}</p>
-                    <p>ملاحظات: ${Notes}</p>
+                    ${notesHtml}
                     <p>عدد الطرود المستلمة: ${countgetsParcels}</p>
                     <p>إجمالي الطرود: ${countAllParcels}</p>
                     <p>المزيد من معلومات WFP: ${MorWFP}</p>
@@ -207,6 +212,7 @@
 
     // Load the Excel file when the page loads
     window.onload = loadExcel;
+
 
   </script>
 </body>
