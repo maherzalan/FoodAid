@@ -98,6 +98,10 @@
             <div id="results"></div>
             <div id="loadingIndicator" class="loading">
               <img src="loading.gif" alt="جاري التحميل..."> <!-- الصورة أو النص الذي يعبر عن التحميل -->
+              <div class="progress">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -121,28 +125,31 @@
     const totalWorkbooks = 2; // عدد الملفات الصغيرة
 
     function loadExcel(file, index) {
-      document.getElementById('loadingIndicator').style.display = 'block'; // إظهار علامة التحميل
+      document.getElementById('loadingIndicator').style.display = 'block';
 
-      fetch(file, {
-        method: 'GET'
-      })
+      fetch(file, { method: 'GET' })
         .then(response => response.arrayBuffer())
         .then(data => {
-          workbooks[index] = XLSX.read(data, {
-            type: 'array'
-          });
-          //console.log(`Excel file ${index + 1} loaded successfully`);
+          workbooks[index] = XLSX.read(data, { type: 'array' });
           workbookLoaded++;
+          updateProgressBar();
           if (workbookLoaded === totalWorkbooks) {
-            document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
+            document.getElementById('loadingIndicator').style.display = 'none';
           }
         })
         .catch(error => {
           console.error(`Error fetching the Excel file ${index + 1}:`, error);
-          document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل في حالة حدوث خطأ
+          document.getElementById('loadingIndicator').style.display = 'none';
         });
     }
 
+    function updateProgressBar() {
+      const progressBar = document.getElementById('progressBar');
+      const progress = (workbookLoaded / totalWorkbooks) * 100;
+      progressBar.style.width = `${progress}%`;
+      progressBar.setAttribute('aria-valuenow', progress);
+    }
+    
     function searchData() {
       const searchInput = document.getElementById('searchInput').value;
       const resultsDiv = document.getElementById('results');
