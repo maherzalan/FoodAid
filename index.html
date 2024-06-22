@@ -98,10 +98,6 @@
             <div id="results"></div>
             <div id="loadingIndicator" class="loading">
               <img src="loading.gif" alt="جاري التحميل..."> <!-- الصورة أو النص الذي يعبر عن التحميل -->
-              <div class="progress">
-                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0"
-                  aria-valuemin="0" aria-valuemax="100"></div>
-              </div>
             </div>
           </div>
         </div>
@@ -132,7 +128,7 @@
         .then(data => {
           workbooks[index] = XLSX.read(data, { type: 'array' });
           workbookLoaded++;
-          updateProgressBar();
+          //updateProgressBar();
           if (workbookLoaded === totalWorkbooks) {
             document.getElementById('loadingIndicator').style.display = 'none';
           }
@@ -149,13 +145,14 @@
       progressBar.style.width = `${progress}%`;
       progressBar.setAttribute('aria-valuenow', progress);
     }
-    
+
     function searchData() {
       const searchInput = document.getElementById('searchInput').value;
       const resultsDiv = document.getElementById('results');
-      const resultCountSpan = document.getElementById('resultCount');
+      //const resultCountSpan = document.getElementById('resultCount');
 
-      if (!resultsDiv || !resultCountSpan) {
+      //if (!resultsDiv || !resultCountSpan) {
+      if (!resultsDiv) {
         console.error('Result div or count span not found');
         return;
       }
