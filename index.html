@@ -131,7 +131,7 @@
           workbooks[index] = XLSX.read(data, {
             type: 'array'
           });
-          console.log(`Excel file ${index + 1} loaded successfully`);
+          //console.log(`Excel file ${index + 1} loaded successfully`);
           workbookLoaded++;
           if (workbookLoaded === totalWorkbooks) {
             document.getElementById('loadingIndicator').style.display = 'none'; // إخفاء علامة التحميل بعد اكتمال التحميل
@@ -156,7 +156,7 @@
       resultsDiv.innerHTML = ''; // Clear previous results
 
       if (workbookLoaded !== totalWorkbooks) {
-        resultsDiv.innerHTML = 'الرجاء تحميل جميع ملفات Excel أولاً.';
+        resultsDiv.innerHTML = 'الرجاء الانتظار قليلاً .';
         return;
       }
 
@@ -192,9 +192,9 @@
           const M1 = result['M#1'] || 'غير معروف';
           const M2 = result['M#2'] || 'غير معروف';
           const Notes = result['Notes'] || '';
-          const LastPrintedDT = result['LastPrintedDT'] || 'غير معروف';
-          const countgetsParcels = result['countgetsParcels'] || 'غير معروف';
-          const countAllParcels = result['countAllParcels'] || 'غير معروف';
+          const LastPrintedDT = result['LastPrintedDT'] || '';
+          const countgetsParcels = result['countgetsParcels'] || 0;
+          const countAllParcels = result['countAllParcels'] || 0;
           const MorWFP = result['MorWFP'] || 'غير معروف';
 
           let notesHtml = '';
@@ -207,8 +207,8 @@
                     <h2>${Name}</h2>
                     <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
                     <!--<p>آخر طباعة: ${LastPrintedDT}</p>-->
-                    <p>عدد الطرود المستلمة: ${countgetsParcels}</p>
-                    <p>إجمالي الطرود المستحقة: ${countAllParcels}</p>
+                    <!--<p>عدد الطرود المستلمة: <h3 class="text-danger">${countgetsParcels}</h3></p>-->
+                    <p>إجمالي الطرود المستحقة: <h3 class="text-danger">${countAllParcels}</h3></p>
                     ${notesHtml}
                     <p>المزيد من معلومات</p>
                     <div class="table-responsive">
