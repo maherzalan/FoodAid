@@ -94,7 +94,7 @@
         </div>
         <div class="row">
           <div class="col">
-            <div id="resultCount" class="mb-3 hidden"></div>
+            <div id="resultCount hidden" class="mb-3 hidden"></div>
             <div id="results"></div>
             <div id="loadingIndicator" class="loading">
               <img src="loading.gif" alt="جاري التحميل..."> <!-- الصورة أو النص الذي يعبر عن التحميل -->
@@ -207,43 +207,45 @@
                     <h2>${Name}</h2>
                     <h3 class="text-danger">عدد الأفراد: ${CF}</h3>
                     <!--<p>آخر طباعة: ${LastPrintedDT}</p>-->
-                    <p>(M)عدد الطرود المستلمة: <h3 class="text-danger">${countgetsParcels}</h3></p>
-                    <p>(M)إجمالي الطرود المستحقة: <span class="text-danger">${countAllParcels}</span></p>
+                    <p>عدد الطرود المستلمة (M): ${countgetsParcels}</p>
+                    <p>إجمالي الطرود المستحقة (M): ${countAllParcels}</p>
                     ${notesHtml}
                     <p>المزيد من معلومات</p>
-                    <div class="table-responsive">
-                        <h4>بيانات M</h4>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">M#1</th>
-                                    <th scope="col">M#2</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>${M1}</td>
-                                    <td>${M2}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="table-responsive mb-3">
-                        <h4>بيانات WFP</h4>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">WFP#1</th>
-                                    <th scope="col">WFP#2</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>${WFP1}</td>
-                                    <td>${WFP2}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="row">
+                        <div class="col-md-6 table-responsive mb-3">
+                            <h4>بيانات السلة الغذائية (M)</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">M#1</th>
+                                        <th scope="col">M#2</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${M1}</td>
+                                        <td>${M2}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-6 table-responsive mb-3">
+                            <h4>بيانات السلة الغذائية (WFP)</h4>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">WFP#1</th>
+                                        <th scope="col">WFP#2</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>${WFP1}</td>
+                                        <td>${WFP2}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             `;
